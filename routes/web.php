@@ -18,3 +18,12 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::group(['middleware' => 'auth'], function (){
+  Route::resource('categorias', 'categoriasController');
+  Route::group(['prefix'  =>  'categorias'], function (){
+    Route::post('activar', 'categoriasController@activar');
+    Route::post('desactivar', 'categoriasController@desactivar');
+  });
+});
+
