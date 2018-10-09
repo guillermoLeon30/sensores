@@ -11,8 +11,10 @@ class InicializacionSeeder extends Seeder
    * @return void
    */
   public function run(){
-    $this->call(CategoriaTableSeeder::class);
-    $this->call(EmpresaTableSeeder::class);
-    $this->call(UsuarioTableSeeder::class);
+    $this->call([
+      CategoriaTableSeeder::class,
+      EmpresaTableSeeder::class,
+      UsuarioTableSeeder::class,
+    ]);
   }
 }

@@ -20,10 +20,26 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['middleware' => 'auth'], function (){
-  Route::resource('categorias', 'categoriasController');
+  Route::resource('categorias', 'categoriasController')->only(['index', 'store']);
   Route::group(['prefix'  =>  'categorias'], function (){
     Route::post('activar', 'categoriasController@activar');
     Route::post('desactivar', 'categoriasController@desactivar');
   });
+
+  Route::resource('empresas', 'empresaController')->only(['index', 'store']);
+  Route::group(['prefix'  =>  'empresas'], function (){
+    Route::post('activar', 'empresaController@activar');
+    Route::post('desactivar', 'empresaController@desactivar');
+    Route::get('registro/{empresa}', 'empresaController@registros');
+  });
+
+  Route::resource('user', 'userController');
+
+  Route::resource('equipo', 'equipoController');
+  Route::group(['prefix' => 'equipo'], function (){
+    Route::get('{equipo}/sensores', 'equipoController@sensores');
+  });
+
+  Route::resource('sensor', 'sensorController');
 });
 

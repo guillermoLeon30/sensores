@@ -17,7 +17,7 @@
         </li>
 
         <li class="treeview">
-          <a href="#">
+          <a href="{{ url('empresas') }}">
             <i class="fa fa-industry"></i><span>Empresas</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
