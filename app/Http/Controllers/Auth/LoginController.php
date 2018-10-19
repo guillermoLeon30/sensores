@@ -7,6 +7,10 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Categoria;
+use Validator;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\RequestException;
 
 class LoginController extends Controller
 {
@@ -70,6 +74,42 @@ class LoginController extends Controller
     $this->incrementLoginAttempts($request);
 
     return $this->sendFailedLoginResponse($request);
+  }
+
+  public function apiLogin(Request $request){
+    $validator = Validator::make($request->all(), [
+      'email'     => 'required|email',
+      'password'  => 'required',
+    ]);
+
+    if ($validator->fails()) {
+      return response()->json(['errores' => $validator->errors()->all()]);
+    }
+
+    $http = new Client([
+      //'base_uri'  =>  'http://localhost/sensores/public/',
+      'base_uri'  =>  url('public'),
+      'timeout'   =>  2.0
+    ]);
+
+    $response = null;
+
+    try {
+      $response = $http->post('oauth/token', [
+        'form_params' => [
+            'grant_type'    => 'password',
+            'client_id'     => 3,
+            'client_secret' => 'nghvVGttiNb6V1ygMVpWbYNmC28SXmxuN7dlhoUy',
+            'username'      => $request->email,
+            'password'      => $request->password,
+            'scope'         => '*',
+        ],
+      ]); 
+    } catch (RequestException  $e) {
+      return response()->json(['errores' => $e->getCode()]);
+    }
+
+    return json_decode((string) $response->getBody(), true);
   }
 
 }
