@@ -7,6 +7,8 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Categoria;
+use App\User;
+use App\Http\Resources\User as UserResourse;
 use Validator;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7;
@@ -76,6 +78,14 @@ class LoginController extends Controller
     return $this->sendFailedLoginResponse($request);
   }
 
+  /**
+   * Handle a login request to the API application.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response\Json|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+   *
+   * @throws \Illuminate\Validation\ValidationException|GuzzleHttp\Exception\RequestException
+   */
   public function apiLogin(Request $request){
     $validator = Validator::make($request->all(), [
       'email'     => 'required|email',
@@ -106,10 +116,17 @@ class LoginController extends Controller
         ],
       ]); 
     } catch (RequestException  $e) {
-      return response()->json(['errores' => $e->getCode()]);
+      if ($e->getCode() === 401)
+        return response()->json(['errores' => ['Credenciales incorrectas.']]);
+       
+      return response()->json(['errores' => ['Ocurrio un error en la conexión.']]);
     }
 
-    return json_decode((string) $response->getBody(), true);
+    $user = User::where('email', $request->email)->get()->first();
+
+    return (new UserResourse($user))->additional([
+      'token' => json_decode((string) $response->getBody(), true)
+    ]);
   }
 
 }
