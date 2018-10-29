@@ -99,7 +99,8 @@ class LoginController extends Controller
     $http = new Client([
       //'base_uri'  =>  'http://localhost/sensores/public/',
       'base_uri'  =>  url('public'),
-      'timeout'   =>  2.0
+      //'base_uri'  =>  'http://192.168.10.10',
+      'timeout'   =>  10.0
     ]);
 
     $response = null;
@@ -109,6 +110,7 @@ class LoginController extends Controller
         'form_params' => [
             'grant_type'    => 'password',
             'client_id'     => 3,
+            //'client_secret' => 'VnbOWLCyFrNnmzKMo523yuYJ3cpzYcXRRxpa3EPN',
             'client_secret' => 'nghvVGttiNb6V1ygMVpWbYNmC28SXmxuN7dlhoUy',
             'username'      => $request->email,
             'password'      => $request->password,
@@ -120,6 +122,7 @@ class LoginController extends Controller
         return response()->json(['errores' => ['Credenciales incorrectas.']]);
        
       return response()->json(['errores' => ['Ocurrio un error en la conexión.']]);
+      //return response($e);
     }
 
     $user = User::where('email', $request->email)->get()->first();

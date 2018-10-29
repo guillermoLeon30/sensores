@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Equipo;
 use App\Models\Categoria;
+use App\Http\Resources\Equipo as EquipoResource;
+use App\Events\sensorEvent;
 
 class EquipoController extends Controller
 {
@@ -104,5 +106,19 @@ class EquipoController extends Controller
       'tipos'     =>  $tipos,
       'unidades'  =>  $unidades
     ]);
+  }
+
+  /**
+   * Devuelve un json de los equipos usar with('sensores') si se quiere con los sensores
+   *
+   * @param  
+   * @return \Illuminate\Http\Response\JsonResponse
+   */
+  public function apiIndex(){
+    return EquipoResource::collection(Equipo::with('sensores')->get());
+  }
+
+  public function apiStore(Request $request){
+    event(new sensorEvent($request));
   }
 }

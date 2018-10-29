@@ -18,3 +18,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/login', 'Auth\LoginController@apiLogin');
+
+Route::post('/sensor', 'EquipoController@apiStore');
+
+Route::group(['middleware' => 'auth:api'], function (){
+  Route::get('/equipos', 'EquipoController@apiIndex');
+});

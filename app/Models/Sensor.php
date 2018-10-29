@@ -69,6 +69,8 @@ class Sensor extends Model
     $page = $request->page;
     $filtro = (isset($request->filtro) && !empty($request->filtro))?$request->filtro:'';
     
-    return Sensor::buscar($filtro)->with(['tipo', 'unidad', 'estado']);
+    return Sensor::where('equipo_id', $sensor->equipo_id)
+                 ->buscar($filtro)
+                 ->with(['tipo', 'unidad', 'estado']);
   }
 }
