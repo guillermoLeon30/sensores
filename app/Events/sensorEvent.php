@@ -10,6 +10,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Carbon\Carbon;
 
 class sensorEvent implements ShouldBroadcastNow
 {
@@ -33,5 +34,19 @@ class sensorEvent implements ShouldBroadcastNow
    */
   public function broadcastOn(){
     return new Channel('sensor');
+  }
+
+  /**
+   * Get the data to broadcast.
+   *
+   * @return array
+   */
+  public function broadcastWith(){
+    return [
+      'equipo'    =>  (int) $this->sensor['equipo'],
+      'sensor'    =>  (int) $this->sensor['sensor'],
+      'data'      =>  (int) $this->sensor['data'],
+      'date_time' =>  Carbon::now()->setTimeZone('America/Lima')->toTimeString()
+    ];
   }
 }

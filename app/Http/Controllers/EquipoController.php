@@ -119,6 +119,6 @@ class EquipoController extends Controller
   }
 
   public function apiStore(Request $request){
-    event(new sensorEvent($request));
+    event(new sensorEvent($request->all()));
   }
 }
