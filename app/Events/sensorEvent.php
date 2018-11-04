@@ -12,7 +12,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Carbon\Carbon;
 
-class sensorEvent implements ShouldBroadcastNow
+class sensorEvent implements ShouldBroadcast
 {
   use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -47,6 +47,19 @@ class sensorEvent implements ShouldBroadcastNow
       'sensor'    =>  (int) $this->sensor['sensor'],
       'data'      =>  (int) $this->sensor['data'],
       'date_time' =>  Carbon::now()->setTimeZone('America/Lima')->toTimeString()
+    ];
+  }
+
+  /**
+   * Get the tags that should be assigned to the job.
+   *
+   * @return array
+   */
+  public function tags(){
+    return [
+      'equipo:'.$this->sensor['equipo'], 
+      'sensor:'.$this->sensor['sensor'],
+      'data:'.$this->sensor['data']
     ];
   }
 }

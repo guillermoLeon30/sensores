@@ -86,4 +86,8 @@ class User extends Authenticatable
     return User::buscar($filtro)->where('empresa_id', $request->empresa_id)
                                 ->with(['tipoDocumento', 'estado', 'rol']);
   }
+
+  public function isSuperAdmin(){
+    return $this->rol->valor === 'superAdmin';
+  }
 }

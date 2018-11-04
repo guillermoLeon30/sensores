@@ -98,8 +98,8 @@ class LoginController extends Controller
 
     $http = new Client([
       //'base_uri'  =>  'http://localhost/sensores/public/',
-      'base_uri'  =>  url('public'),
-      //'base_uri'  =>  'http://192.168.10.10',
+      //'base_uri'  =>  url('public'),
+      'base_uri'  =>  'http://192.168.10.10',
       'timeout'   =>  10.0
     ]);
 
@@ -110,8 +110,8 @@ class LoginController extends Controller
         'form_params' => [
             'grant_type'    => 'password',
             'client_id'     => 3,
-            //'client_secret' => 'VnbOWLCyFrNnmzKMo523yuYJ3cpzYcXRRxpa3EPN',
-            'client_secret' => 'nghvVGttiNb6V1ygMVpWbYNmC28SXmxuN7dlhoUy',
+            'client_secret' => 'VnbOWLCyFrNnmzKMo523yuYJ3cpzYcXRRxpa3EPN',
+            //'client_secret' => 'nghvVGttiNb6V1ygMVpWbYNmC28SXmxuN7dlhoUy',
             'username'      => $request->email,
             'password'      => $request->password,
             'scope'         => '*',
