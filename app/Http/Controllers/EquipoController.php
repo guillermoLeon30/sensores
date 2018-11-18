@@ -7,6 +7,8 @@ use App\Models\Equipo;
 use App\Models\Categoria;
 use App\Http\Resources\Equipo as EquipoResource;
 use App\Events\sensorEvent;
+use TrayLabs\InfluxDB\Facades\InfluxDB;
+use InfluxDB\Point;
 
 class EquipoController extends Controller
 {
@@ -119,6 +121,20 @@ class EquipoController extends Controller
   }
 
   public function apiStore(Request $request){
+    $points = array(
+      new Point(
+        'sensor',
+        (float) $request->data,
+        [],
+        [
+          'idEquipo'  =>  $request->equipo,
+          'idSensor'  =>  $request->sensor
+        ]
+      )
+    );    
+
+    $result = InfluxDB::writePoints($points);
+
     event(new sensorEvent($request->all()));
   }
 }

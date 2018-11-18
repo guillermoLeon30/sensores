@@ -161,6 +161,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Laraveles\Spanish\SpanishServiceProvider::class,
+        TrayLabs\InfluxDB\Providers\ServiceProvider::class,
 
     ],
 
@@ -210,6 +211,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'InfluxDB' => TrayLabs\InfluxDB\Facades\InfluxDB::class,
 
     ],
 

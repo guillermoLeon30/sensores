@@ -14,7 +14,9 @@
         "laravel/passport": "^7.0",
         "laravel/tinker": "^1.0",
         "laraveles/spanish": "^1.1",
-        "pusher/pusher-php-server": "~3.0"
+        "pusher/pusher-php-server": "~3.0",
+        "stefanotorresi/influxdb-php-async": "^0.5.0",
+        "tray-labs/laravel-influxdb": "^1.0"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
