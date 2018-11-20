@@ -6,6 +6,21 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class Sensor extends JsonResource
 {
+  private $datos;
+  private $fecha;
+
+  function __construct($resource, $datos = [], $fecha = []){
+    if (!is_array($datos) || !is_array($fecha)) {
+      $this->datos = [];
+      $this->fecha = [];
+    } else {
+      $this->datos = $datos;
+      $this->fecha = $fecha;
+    }
+
+    parent::__construct($resource);
+  }
+
   /**
    * Transform the resource into an array.
    *
@@ -18,8 +33,8 @@ class Sensor extends JsonResource
       'tipo'      =>  $this->tipo->valor,
       'unidad'    =>  $this->unidad->valor,
       'ubicacion' =>  $this->ubicacion,
-      'datos'     =>  [],
-      'fecha'     =>  []
+      'datos'     =>  $this->datos,
+      'fecha'     =>  $this->fecha
     ];
   }
 }

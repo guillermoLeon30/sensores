@@ -19,6 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/login', 'Auth\LoginController@apiLogin');
 
+Route::get('/sensor/data', 'EquipoController@apiDataSensor'); // Mover con el middleware de seguridad
 Route::post('/sensor', 'EquipoController@apiStore');
 
 Route::group(['middleware' => 'auth:api'], function (){
