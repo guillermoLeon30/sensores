@@ -5,13 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Equipo;
 use App\Models\Categoria;
-use App\Models\Sensor; // borrar luego cuando se crea la clase de comunicacion
 use App\Http\Resources\Equipo as EquipoResource;
-use App\Http\Resources\Sensor as SensorResource; // borrar luego cuando se crea la clase de comunicacion
 use App\Events\sensorEvent;
-use TrayLabs\InfluxDB\Facades\InfluxDB; // borrar luego cuando se crea la clase de comunicacion
-use InfluxDB\Point; // borrar luego cuando se crea la clase de comunicacion
-use Carbon\Carbon; // borrar luego cuando se crea la clase de comunicacion
+use App\Api\Consultas;
 
 class EquipoController extends Controller
 {
@@ -131,44 +127,18 @@ class EquipoController extends Controller
    * @return 
    */
   public function apiStore(Request $request){
-    $points = array(
-      new Point(
-        'sensor',
-        (float) $request->data,
-        [],
-        [
-          'idEquipo'  =>  $request->equipo,
-          'idSensor'  =>  $request->sensor
-        ]
-      )
-    );    
-
-    $result = InfluxDB::writePoints($points);
+    Consultas::guardarInflux($request->data, $request->equipo, $request->sensor);
 
     event(new sensorEvent($request->all()));
   }
 
+  /**
+   * Devuelve los datos del sensor solicitado
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response\JsonResponse
+   */
   public function apiDataSensor(Request $request){
-    $resultado = InfluxDB::query("
-      SELECT * 
-      FROM sensor 
-      WHERE idEquipo = '$request->equipo' AND idSensor = '$request->sensor'
-      TZ('America/Guayaquil')")->getPoints();
-
-    $fecha = collect(array_column($resultado, 'time'))->map(function ($item, $key){
-      sscanf($item, "%d-%d-%dT%d:%d:%d.%s", $anio, $mes, $dia, $hora, $minuto, $segundo, $basura);
-      $fecha = Carbon::create($anio, $mes, $dia, $hora, $minuto, $segundo, 'America/Guayaquil');
-      
-      return $fecha->format('d/m/Y - H:i:s');
-    })->all();
-
-    $datos = array_column($resultado, 'value');
-
-    $sensor = Sensor::where([
-      ['equipo_id', $request->equipo],
-      ['id', $request->sensor]
-    ])->get()->first();
-
-    return new SensorResource($sensor, $datos, $fecha);
+    return Consultas::dataSensor($request);
   }
 }
