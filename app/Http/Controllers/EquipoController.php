@@ -139,6 +139,16 @@ class EquipoController extends Controller
    * @return \Illuminate\Http\Response\JsonResponse
    */
   public function apiDataSensor(Request $request){
+    /*$validator = Validator::make($request->all(), [
+      'equipo'     => 'required|email',
+      'password'  => 'required',
+    ]);
+
+    if ($validator->fails())
+      return [
+        'errores' => $validator->errors()->all()
+      ]);*/
+
     return Consultas::getDataSensor($request);
   }
 }
