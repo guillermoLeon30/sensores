@@ -139,6 +139,6 @@ class EquipoController extends Controller
    * @return \Illuminate\Http\Response\JsonResponse
    */
   public function apiDataSensor(Request $request){
-    return Consultas::dataSensor($request);
+    return Consultas::getDataSensor($request);
   }
 }
