@@ -26,14 +26,20 @@ class Consultas extends Model
   }
 
   public static function getDataSensor($request){
-    $fechaInicial = sprintf('%sT00:00:00Z', $request->fechaInicial);
-    $fechaFinal = sprintf('%sT23:59:59Z', $request->fechaFinal);
+    $fechaInicial = Carbon::createFromFormat('Y-m-d H:i:sT', $request->fechaInicial)
+                    ->tz('UTC')
+                    ->toRfc3339String();
+
+    $fechaFinal = Carbon::createFromFormat('Y-m-d H:i:sT', $request->fechaFinal)
+                  ->tz('UTC')
+                  ->toRfc3339String();
+                  
     $incremento = sprintf('%s%s', $request->incremento, $request->tiempo);
     
     $resultado = InfluxDB::query("
       SELECT mean(\"value\") As value
       FROM sensor 
-      WHERE idEquipo = '$request->equipo' AND idSensor = '$request->sensor' AND time >= '$request->fechaInicial' AND time <= '$request->fechaFinal'
+      WHERE idEquipo = '$request->equipo' AND idSensor = '$request->sensor' AND time >= '$fechaInicial' AND time <= '$fechaFinal'
       Group By time($incremento) fill(none)
       TZ('America/Guayaquil')")->getPoints();
 
