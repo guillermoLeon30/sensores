@@ -10,9 +10,6 @@ use App\Models\Categoria;
 use App\User;
 use App\Http\Resources\User as UserResourse;
 use Validator;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7;
-use GuzzleHttp\Exception\RequestException;
 
 class LoginController extends Controller
 {
@@ -93,42 +90,22 @@ class LoginController extends Controller
     ]);
 
     if ($validator->fails()) {
-      return response()->json(['errores' => $validator->errors()->all()]);
+      return response()->json(['errores' => $validator->errors()->all()], 400);  
     }
 
-    $http = new Client([
-      //'base_uri'  =>  'http://localhost/sensores/public/',
-      //'base_uri'  =>  url('public'),
-      'base_uri'  =>  'http://192.168.10.10',
-      'timeout'   =>  10.0
-    ]);
+    $credentials = [
+      'email'     =>  $request->email,
+      'password'  =>  $request->password
+    ];
 
-    $response = null;
-
-    try {
-      $response = $http->post('oauth/token', [
-        'form_params' => [
-            'grant_type'    => 'password',
-            'client_id'     => 3,
-            'client_secret' => 'VnbOWLCyFrNnmzKMo523yuYJ3cpzYcXRRxpa3EPN',
-            //'client_secret' => 'nghvVGttiNb6V1ygMVpWbYNmC28SXmxuN7dlhoUy',
-            'username'      => $request->email,
-            'password'      => $request->password,
-            'scope'         => '*',
-        ],
-      ]); 
-    } catch (RequestException  $e) {
-      if ($e->getCode() === 401)
-        return response()->json(['errores' => ['Credenciales incorrectas.']]);
-       
-      return response()->json(['errores' => ['Ocurrio un error en la conexión.']]);
-      //return response($e);
+    if (!Auth::attempt($credentials)) {
+      return response()->json(['errores' => ['Credenciales incorrectas.']]);
     }
 
     $user = User::where('email', $request->email)->get()->first();
 
     return (new UserResourse($user))->additional([
-      'token' => json_decode((string) $response->getBody(), true)
+      'scope' => ''
     ]);
   }
 

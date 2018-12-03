@@ -25,6 +25,12 @@ class AuthServiceProvider extends ServiceProvider
   public function boot()
   {
     $this->registerPolicies();
-    Passport::routes();
+    
+    Passport::routes(null, ['middleware' => [ \Barryvdh\Cors\HandleCors::class ]]);
+
+    Passport::personalAccessClientId(1);
+    // Passport::tokensExpireIn(now()->addMinutes(1));
+    Passport::tokensExpireIn(now()->addDays(1));
+    Passport::refreshTokensExpireIn(now()->addDays(15));
   }
 }
